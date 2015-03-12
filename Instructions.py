@@ -230,10 +230,10 @@ def go():
                                 wallOnRight = True
                 
                 if wallOnRight:
-                        turnLeft(1)
+                        turnLeft(2.5)
                         backward(0.6)
                 else:
-                        turnRight(1)
+                        turnRight(2.5)
                         backward(0.6)
 
 
