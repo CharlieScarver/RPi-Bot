@@ -65,6 +65,8 @@ def forward(duration = 2, dutyCycle = 100):
 	p1.stop()
 	p2.stop()
 
+	sleep(0.05)
+
 def backward(duration = 2, dutyCycle = 100):
 
 	Motor1A = 16
@@ -93,6 +95,8 @@ def backward(duration = 2, dutyCycle = 100):
 	#print "Stopping"
 	p1.stop()
 	p2.stop()
+
+	sleep(0.05)
 
 def turnRight(duration = 3.8, dutyCycle = 100):
         # duration in seconds
@@ -127,6 +131,8 @@ def turnRight(duration = 3.8, dutyCycle = 100):
 	p1.stop()
 	p2.stop()
 
+	sleep(0.05)
+
 def turnLeft(duration = 3.8, dutyCycle = 100):
         # duration in seconds
         # dutyCycle between 0.0% and 100.0%
@@ -160,6 +166,8 @@ def turnLeft(duration = 3.8, dutyCycle = 100):
 	p1.stop()
 	p2.stop()
 
+	sleep(0.05)
+
 def myStop():
         
         Motor1A = 16
@@ -183,10 +191,10 @@ def myStop():
         p1.start(0)
         p2.start(0)
 
+        sleep(0.1)
+
 	p1.stop()
 	p2.stop()
-
-	sleep(1)
 
 
 # --------- Sensors --------- 
