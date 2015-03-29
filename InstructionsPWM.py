@@ -41,7 +41,7 @@ def forward(duration = 2, dutyCycle = 100):
 	Motor2B = 21
 	Motor2E = 19
 
-	print "Going forward"
+	#print "Going forward"
 	GPIO.output(Motor1A,GPIO.LOW)
 	GPIO.output(Motor1B,GPIO.HIGH)
 
@@ -77,7 +77,7 @@ def backward(duration = 2, dutyCycle = 100):
 	Motor2B = 21
 	Motor2E = 19
 
-	print "Going backward"
+	#print "Going backward"
 	GPIO.output(Motor1A,GPIO.HIGH)
 	GPIO.output(Motor1B,GPIO.LOW)
 
@@ -110,7 +110,7 @@ def turnRight(duration = 3.8, dutyCycle = 100):
 	Motor2B = 21
 	Motor2E = 19
 
-	print "Turning right"
+	#print "Turning right"
 	GPIO.output(Motor1A,GPIO.LOW)
 	GPIO.output(Motor1B,GPIO.HIGH)
 
@@ -145,7 +145,7 @@ def turnLeft(duration = 3.8, dutyCycle = 100):
 	Motor2B = 21
 	Motor2E = 19
 
-	print "Turning left"
+	#print "Turning left"
 	GPIO.output(Motor1A,GPIO.LOW)
 	GPIO.output(Motor1B,GPIO.HIGH)
 
@@ -243,7 +243,7 @@ def pulseFront():
         distance = pulse_duration * 17150
         distance = round(distance, 2)
 
-        print "Distance", distance, "cm"
+        print "Front Distance", distance, "cm"
 
         return distance
 
@@ -272,11 +272,26 @@ def pulseRight():
         distance = pulse_duration * 17150
         distance = round(distance, 2)
 
-        print "Distance", distance, "cm"
+        print "Right Distance", distance, "cm"
 
         return distance
 
-# --------- Main --------- 
+# --------- Main ---------
+
+def checkForWallInFront():
+    
+    if pulseFront() > 15.0:
+        return False;
+    else:
+        return True;
+
+def checkForWallIOnRight():
+    
+    if pulseRight() > 15.0:
+        return False;
+    else:
+        return True;
+
 
 def go():
 
@@ -303,58 +318,45 @@ def go():
                         if pulseRight() > 15.0:
                                 wallOnRight = False
                         else:
-                                wallOnRight = True     
+                                wallOnRight = True
+                                
                 if wallOnRight:
-                        turnLeft(2, 100)
-                        backward(0.5, 100)
-                        turnLeft(2, 100)
-                        backward(2, 100)
-                        turnLeft(2, 100)
-                        print "Here"
-                        forward(1, 100)
+                        print("-----tlb-----");
+                        backward(3, 100);
+                        turnLeft(1.5, 100);
+                        forward(0.5, 100);
+                        turnLeft(3, 100);
+                        forward(0.5, 100);
+                        turnLeft(1.5, 100);
+                        #print("Here");
 
-                        frontDistance = pulseFront()
-                        if pulseRight() > 15.0:
-                                wallOnRight = False
-                        else:
-                                wallOnRight = True
+                        wallInFront = checkForWallInFront();
                                         
-                        while not frontDistance > 15.0 and wallOnRight:
-                                print "-----tl-----"
-                                turnLeft(0.3, 100)
-                                forward(0.3, 100)
-
-                                frontDistance = pulseFront()
-                                if pulseRight() > 15.0:
-                                        wallOnRight = False
-                                else:
-                                        wallOnRight = True             
+                        while not wallInFront or wallInFront:
+                                print("-----tl-----");
+                                turnLeft(0.3, 100);
+                                forward(0.3, 100);
+                                wallInFront = checkForWallInFront();
+            
                 else:
-                        turnRight(2, 100)
-                        backward(0.5, 100)
-                        turnRight(2, 100)
-                        backward(2, 100)
-                        turnRight(2, 100)
-                        print "There"
-                        forward(1, 100)
+                        print("-----trb-----");
+                        backward(0.7, 100);
+                        turnRight(1.5, 100);
+                        backward(0.5, 100);
+                        turnRight(1.5, 100);
+                        backward(0.5, 100);
+                        turnRight(1.5, 100);
+                        #print("There");
 
-                        frontDistance = pulseFront()
-                        if pulseRight() > 15.0:
-                                wallOnRight = False
-                        else:
-                                wallOnRight = True
+                        wallOnRight = checkForWallIOnRight();
                                         
-                        while not wallOnRight and frontDistance > 15.0:
-                                print "-----tr-----"
-                                turnRight(0.3, 100)
-                                forward(0.3, 100)
+                        while not wallOnRight:
+                                print("-----tr-----");
+                                turnRight(0.5, 100);
+                                forward(0.3, 100);
+                                wallOnRight = checkForWallIOnRight();
 
-                                frontDistance = pulseFront()
-                                if pulseRight() > 15.0:
-                                        wallOnRight = False
-                                else:
-                                        wallOnRight = True
+                                
                 print "End of cycle"
-                                    
-
+   
 

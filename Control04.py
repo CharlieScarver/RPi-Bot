@@ -2,10 +2,8 @@ from InstructionsPWM import *
 
 try:
 	getReady()
-        forward(2)
-	#turnRight(2)
-        backward(2,30)
-	clean()
+
+        forward(5, 100);
 	
 except Exception as ex:
 	clean()
