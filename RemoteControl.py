@@ -12,8 +12,13 @@ try:
         };
 
 	input = raw_input();
+	last = input;
 	while input != "e":
-                options[input[0]](0.5, 100);
+                if input == "":
+			options[last[0]](0.5, 100);
+		else:
+			options[input[0]](0.5, 100);
+			last = input;
                 input = raw_input();
                 
 	
