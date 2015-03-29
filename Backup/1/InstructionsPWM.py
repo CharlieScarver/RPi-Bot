@@ -369,11 +369,9 @@ def go():
                         print("-----tlb-----");
                         backward(1);
 			#turnLeft(1.5, 100);
-                        turn("left-forward", 0.9);
-			forward(0.3);
                         turn("left-forward", 1.5);
                         forward(1);
-                        turn("left-forward", 1);
+                        turn("left-forward", 1.9);
 			#backward(0.5);
   			#turn("left-forward", 0.3);
                         #print("Here");
@@ -398,11 +396,9 @@ def go():
                         #turn("right-forward", 1.5, 100);
                         #backward(0.5, 100);
                         #turn("right-forward", 0.8, 100);
-               		forward(0.1);
-                        turnRight(2);
-                        backward(0.3);
-			turnRight(1.5);
-			forward(3);
+               		forward(0.3);
+                        turnRight(3.8);
+                        forward(2.3);
                         #turnRight(1.5);
                         #forward(2);
                         #print("There");
@@ -412,10 +408,13 @@ def go():
                                        
                         while not wallOnRight and not wallInFront:
                                 print("-----tr-----");
-                                turnRight(0.3, 100);
+                                turnRight(0.5, 100);
                                 forward(0.3, 100);
                                 wallOnRight = checkForWallOnRight();
 				wallInFront = checkForWallInFront();
 	
+
                                 
                 print "End of cycle"
+   
+
