@@ -70,19 +70,34 @@ class PiBot:
         while True:
 
             frontCheckResult = frontWallCheck()
-            wallInFront = frontCheckResult
-            wallOnRight = rightWallCheck()
+            rightCheckResult = rightWallCheck()
 
-            lastDistsRight[0] = rightWallCheck()
+            wallInFront = frontCheckResult[0]
+            wallOnRight = rightCheckResult[0]
+
+            lastDistsRight[2] = lastDistsRight[1]
+            lastDistsRight[1] = lastDistsRight[0]
+            lastDistsRight[0] = rightCheckResult[1]
                                                          
             while wallOnRight and not wallInFront:
                 print("-----f-----")
                 forward(self.MOVE_DUR_PER_TICK, self.MAX_SPEED)
-                wallInFront = frontWallCheck()
-                wallOnRight = rightWallCheck()
-
                 
-            
+                frontCheckResult = frontWallCheck()
+                rightCheckResult = rightWallCheck()
+                
+                wallInFront = frontCheckResult[0]
+                wallOnRight = rightCheckResult[0]
+
+                lastDistsRight[2] = lastDistsRight[1]
+                lastDistsRight[1] = lastDistsRight[0]
+                lastDistsRight[0] = rightCheckResult[1]
+
+                if lastDistsRight[0] > lastDistsRight[1] and lastDistsRight[1] > lastDistsRight[2]:
+                    turnRight(0.3)
+
+                if lastDistsRight[0] < lastDistsRight[1] and lastDistsRight[1] < lastDistsRight[2]:
+                    turnLeft(0.3)          
                                     
                 print("End of cycle")
 
@@ -93,7 +108,7 @@ class PiBot:
 
     # --------- Basic Movement --------- 
 
-    def getReady(self):
+    def getMotorsReady(self):
             
             GPIO.setmode(GPIO.BOARD)
 
