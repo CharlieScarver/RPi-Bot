@@ -8,7 +8,7 @@ class PiBot:
 
     # Pins
     M1A = 16
-    M2B = 18
+    M1B = 18
     M1E = 22
     
     M2A = 23
@@ -21,21 +21,26 @@ class PiBot:
     S2T = 7
     S2E = 15
 
-    # Max Speed/DutyCycle
+    # Speed of Sound at sea level at 20 degrees celsius (in cm/s)
+    SPEED_OF_SOUND = 34321
+
+    # Max Motor Speed/PWM DutyCycle
     MAX_SPEED = 100
 
-    # Settle and Move Durations
+    # Settle and Move Durations (in seconds)
     MOTOR_SETTLE_DUR = 0.03
-
-    SENSOR_SETTLE_DUR = 2.00
-
     MOVE_DUR_PER_TICK = 0.3
+
+    INIT_SENSOR_SETTLE_DUR = 2.00
+    SENSOR_SETTLE_DUR = 0.03
+    SENSOR_PULSE_DUR = 0.00001 #(10 microseconds) 
 
     # Wall Detection Distances
 
     FRONT_WALL_DET_DIST = 15.0
 
     RIGHT_WALL_DET_DIST = 15.0
+
 
     # --------- Constructor ---------
 
@@ -46,7 +51,7 @@ class PiBot:
 
     def frontWallCheck(self):
 
-        frontDist = pulseFront()
+        frontDist = self.pulseFront()
         
         if frontDist > self.FRONT_WALL_DET_DIST:
             return [False, frontDist]
@@ -55,7 +60,7 @@ class PiBot:
 
     def rightWallCheck(self):
 
-        rightDist = pulseRight()
+        rightDist = self.pulseRight()
         
         if rightDist > self.RIGHT_WALL_DET_DIST:
             return [False, rightDist]
@@ -65,12 +70,12 @@ class PiBot:
 
     def go(self):
 
-        lastDistsRight[15.0, 15.0, 15.0];
+        lastDistsRight = [15.0, 15.0, 15.0, 15.0];
 
         while True:
 
-            frontCheckResult = frontWallCheck()
-            rightCheckResult = rightWallCheck()
+            frontCheckResult = self.frontWallCheck()
+            rightCheckResult = self.rightWallCheck()
 
             wallInFront = frontCheckResult[0]
             wallOnRight = rightCheckResult[0]
@@ -81,10 +86,10 @@ class PiBot:
                                                          
             while wallOnRight and not wallInFront:
                 print("-----f-----")
-                forward(self.MOVE_DUR_PER_TICK, self.MAX_SPEED)
+                self.forward(self.MOVE_DUR_PER_TICK, self.MAX_SPEED)
                 
-                frontCheckResult = frontWallCheck()
-                rightCheckResult = rightWallCheck()
+                frontCheckResult = self.frontWallCheck()
+                rightCheckResult = self.rightWallCheck()
                 
                 wallInFront = frontCheckResult[0]
                 wallOnRight = rightCheckResult[0]
@@ -93,11 +98,11 @@ class PiBot:
                 lastDistsRight[1] = lastDistsRight[0]
                 lastDistsRight[0] = rightCheckResult[1]
 
-                if lastDistsRight[0] > lastDistsRight[1] and lastDistsRight[1] > lastDistsRight[2]:
-                    turnRight(0.3)
+                if lastDistsRight[0] > lastDistsRight[1] and lastDistsRight[1] > lastDistsRight[2] and lastDistsRight[2] > lastDistsRight[3]:
+                    self.turnRight(0.1)
 
-                if lastDistsRight[0] < lastDistsRight[1] and lastDistsRight[1] < lastDistsRight[2]:
-                    turnLeft(0.3)          
+                if lastDistsRight[0] < lastDistsRight[1] and lastDistsRight[1] < lastDistsRight[2] and lastDistsRight[2] < lastDistsRight[3]:
+                    self.turnLeft(0.1)          
                                     
                 print("End of cycle")
 
@@ -253,16 +258,16 @@ class PiBot:
             GPIO.output(self.S1T, False)
             GPIO.output(self.S2T, False)
 
-            sleep(self.SENSOR_SETTLE_DURATION)
+            sleep(self.INIT_SENSOR_SETTLE_DUR)
 
     def pulseFront(self):
 
         GPIO.output(self.S1T, False)
         #print "Sensor settling"
-        #sleep(0.03)
+        sleep(self.SENSOR_SETTLE_DUR)
 
         GPIO.output(self.S1T, True)
-        sleep(0.00001)        
+        sleep(self.SENSOR_PULSE_DUR)       
         GPIO.output(self.S1T, False)
 
         while GPIO.input(self.S1E) == 0:
@@ -273,7 +278,7 @@ class PiBot:
 
         pulse_duration = pulse_end - pulse_start
 
-        distance = pulse_duration * 17150
+        distance = pulse_duration * (self.SPEED_OF_SOUND / 2) #17150
         distance = round(distance, 2)
 
         print "Front Distance", distance, "cm"
@@ -284,10 +289,10 @@ class PiBot:
 
         GPIO.output(self.S2T, False)
         #print "Sensor settling"
-        #sleep(0.03)
+        sleep(self.SENSOR_SETTLE_DUR)
 
         GPIO.output(self.S2T, True)
-        sleep(0.00001)        
+        sleep(self.SENSOR_PULSE_DUR)
         GPIO.output(self.S2T, False)
 
         while GPIO.input(self.S2E) == 0:
@@ -298,7 +303,7 @@ class PiBot:
 
         pulse_duration = pulse_end - pulse_start
 
-        distance = pulse_duration * 17150
+        distance = pulse_duration * (self.SPEED_OF_SOUND / 2) #17150
         distance = round(distance, 2)
 
         print "Right Distance", distance, "cm"

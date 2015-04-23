@@ -1,8 +1,8 @@
-import PiBot
+from PiBot import PiBot
+
+robot = PiBot('Dave')
 
 try:
-	robot = PiBot('Dave')
-
 	robot.getMotorsReady()
 	robot.getSensorsReady()
 	robot.go()
