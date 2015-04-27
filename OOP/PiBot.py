@@ -29,7 +29,7 @@ class PiBot:
 
     # Settle and Move Durations (in seconds)
     MOTOR_SETTLE_DUR = 0.03
-    MOVE_DUR_PER_TICK = 0.3
+    MOVE_DUR_PER_TICK = 0.4
 
     INIT_SENSOR_SETTLE_DUR = 2.00
     SENSOR_SETTLE_DUR = 0.03
@@ -39,7 +39,7 @@ class PiBot:
 
     FRONT_WALL_DET_DIST = 15.0
 
-    RIGHT_WALL_DET_DIST = 15.0
+    RIGHT_WALL_DET_DIST = 20.0
 
 
     # --------- Constructor ---------
@@ -99,11 +99,11 @@ class PiBot:
                 lastDistsRight[0] = rightCheckResult[1]
 
                 #if lastDistsRight[0] > lastDistsRight[1] and lastDistsRight[1] > lastDistsRight[2] and lastDistsRight[2] > lastDistsRight[3]:
-                if lastDistsRight[0] - lastDistsRight[1] > 0.50
+                if lastDistsRight[0] - lastDistsRight[1] > 0.50:
                     self.turnRight(0.1)
 
                 #if lastDistsRight[0] < lastDistsRight[1] and lastDistsRight[1] < lastDistsRight[2] and lastDistsRight[2] < lastDistsRight[3]:
-                if lastDistsRight[0] - lastDistsRight[1] < - 0.50
+                if lastDistsRight[0] - lastDistsRight[1] < - 0.50:
                     self.turnLeft(0.1)          
                                     
                 print("End of cycle")
