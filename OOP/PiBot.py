@@ -111,12 +111,14 @@ class PiBot:
     def clean(self):
             GPIO.cleanup()
 
-    # --------- Basic Movement --------- 
+    # --------- Preparation ------------
 
-    def getMotorsReady(self):
-            
+    def setGPIOMode(self):
             GPIO.setmode(GPIO.BOARD)
 
+    def getMotorsReady(self):
+
+            print("Getting motors ready")
             GPIO.setup(self.M1A, GPIO.OUT)
             GPIO.setup(self.M1B, GPIO.OUT)
             GPIO.setup(self.M1E, GPIO.OUT)
@@ -124,6 +126,22 @@ class PiBot:
             GPIO.setup(self.M2A, GPIO.OUT)
             GPIO.setup(self.M2B, GPIO.OUT)
             GPIO.setup(self.M2E, GPIO.OUT)
+
+    def getSensorsReady(self):
+
+            print("Getting sensors ready")
+            GPIO.setup(self.S1T,GPIO.OUT)
+            GPIO.setup(self.S1E,GPIO.IN)
+
+            GPIO.setup(self.S2T,GPIO.OUT)
+            GPIO.setup(self.S2E,GPIO.IN)
+
+            GPIO.output(self.S1T, False)
+            GPIO.output(self.S2T, False)
+
+            sleep(self.INIT_SENSOR_SETTLE_DUR)
+
+    # --------- Basic Movement --------- 
 
     def forward(self, duration = 2, dutyCycle = 100):
             # duration in seconds
@@ -243,22 +261,6 @@ class PiBot:
             sleep(self.MOTOR_SETTLE_DUR)
 
     # --------- Sensors --------- 
-
-    def getSensorsReady(self):
-
-            GPIO.setmode(GPIO.BOARD)
-
-            print "Getting sensors ready"
-            GPIO.setup(self.S1T,GPIO.OUT)
-            GPIO.setup(self.S1E,GPIO.IN)
-
-            GPIO.setup(self.S2T,GPIO.OUT)
-            GPIO.setup(self.S2E,GPIO.IN)
-
-            GPIO.output(self.S1T, False)
-            GPIO.output(self.S2T, False)
-
-            sleep(self.INIT_SENSOR_SETTLE_DUR)
 
     def pulseFront(self):
 
