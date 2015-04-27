@@ -98,27 +98,37 @@ class PiBot:
                 lastDistsRight[1] = lastDistsRight[0]
                 lastDistsRight[0] = rightCheckResult[1]
 
+		if lastDistsRight[0] > 16.0:
+		    self.turnRight(0.15)
+		    self.forward(1)
+
+		if lastDistsRight[0] < 14.0:
+		    self.turnLeft(0.05)
+		    self.forward(1)
+
                 #if lastDistsRight[0] > lastDistsRight[1] and lastDistsRight[1] > lastDistsRight[2] and lastDistsRight[2] > lastDistsRight[3]:
-                if lastDistsRight[0] - lastDistsRight[1] > 0.50:
-                    self.turnRight(0.1)
+                #if lastDistsRight[0] - lastDistsRight[1] > 0.70:
+                #    self.turnRight(0.1)
 
                 #if lastDistsRight[0] < lastDistsRight[1] and lastDistsRight[1] < lastDistsRight[2] and lastDistsRight[2] < lastDistsRight[3]:
-                if lastDistsRight[0] - lastDistsRight[1] < - 0.50:
-                    self.turnLeft(0.1)
+                #if lastDistsRight[0] - lastDistsRight[1] < - 0.70:
+                #    self.turnLeft(0.1)
+
 
             if wallOnRight:# and wallInFront:
                 print("-----tlb-----")
-                backward(1)
-                turnLeft(0.9)
-                forward(0.3)
-                turnLeft(1.5)
-                forward(1)
-                turnLeft(1)
+                self.backward(1)
+                self.turnLeft(0.9)
+                self.forward(0.3)
+                self.turnLeft(1.5)
+                self.forward(1)
+                self.turnLeft(1)
             
             elif not wallOnRight:# and wallInFront:
                 print("-----trb-----")
-                turnRight()
-                forward()          
+		self.forward(0.5)
+                self.turnRight(1.6)
+                self.forward(4)          
                                     
             print("End of cycle")
 
