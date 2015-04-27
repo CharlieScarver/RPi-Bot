@@ -127,6 +127,8 @@ class PiBot:
             GPIO.setup(self.M2B, GPIO.OUT)
             GPIO.setup(self.M2E, GPIO.OUT)
 
+            sleep(self.MOTOR_SETTLE_DUR)
+
     def getSensorsReady(self):
 
             print("Getting sensors ready")
@@ -240,20 +242,12 @@ class PiBot:
         
             GPIO.output(self.M1A, GPIO.LOW)
             GPIO.output(self.M1B, GPIO.LOW)
+            GPIO.output(self.M1E, GPIO.LOW)
             
             GPIO.output(self.M2A, GPIO.LOW)
             GPIO.output(self.M2B, GPIO.LOW)
+            GPIO.output(self.M2E, GPIO.LOW)
 
-            p1 = GPIO.PWM(self.M1E, 100)
-            p2 = GPIO.PWM(self.M2E, 100)
-            
-            p1.start(0)
-            p2.start(0)
-
-            sleep(0.01)
-
-            p1.stop()
-            p2.stop()
 
             print "Staying here"
             sleep(duration)
