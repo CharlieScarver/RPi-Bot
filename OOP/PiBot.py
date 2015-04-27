@@ -70,7 +70,7 @@ class PiBot:
 
     def go(self):
 
-        lastDistsRight = [15.0, 15.0, 15.0, 15.0];
+        lastDistsRight = [15.0, 15.0, 15.0];
 
         while True:
 
@@ -98,21 +98,25 @@ class PiBot:
                 lastDistsRight[1] = lastDistsRight[0]
                 lastDistsRight[0] = rightCheckResult[1]
 
-		if lastDistsRight[0] > 16.0:
-		    self.turnRight(0.15)
-		    self.forward(1)
+		#if lastDistsRight[0] > 16.0:
+		#    self.turnRight(0.15)
+		#    self.forward(1)
 
-		if lastDistsRight[0] < 14.0:
-		    self.turnLeft(0.05)
-		    self.forward(1)
+		#if lastDistsRight[0] < 14.0:
+		#    self.turnLeft(0.05)
+		#    self.forward(1)
 
-                #if lastDistsRight[0] > lastDistsRight[1] and lastDistsRight[1] > lastDistsRight[2] and lastDistsRight[2] > lastDistsRight[3]:
+                if lastDistsRight[0] > lastDistsRight[1] and lastDistsRight[1] > lastDistsRight[2] and lastDistsRight[2] > 16.0:
                 #if lastDistsRight[0] - lastDistsRight[1] > 0.70:
-                #    self.turnRight(0.1)
+               		self.turnRight(0.15)
+			self.forward(0.7)
+			self.turnLeft(0.15)
 
-                #if lastDistsRight[0] < lastDistsRight[1] and lastDistsRight[1] < lastDistsRight[2] and lastDistsRight[2] < lastDistsRight[3]:
+                if lastDistsRight[0] < lastDistsRight[1] and lastDistsRight[1] < lastDistsRight[2] and lastDistsRight[2] < 14.0:
                 #if lastDistsRight[0] - lastDistsRight[1] < - 0.70:
-                #    self.turnLeft(0.1)
+                	self.turnLeft(0.1)
+			self.forward(0.5)
+			self.turnRight(0.1)
 
 
             if wallOnRight:# and wallInFront:
@@ -127,8 +131,10 @@ class PiBot:
             elif not wallOnRight:# and wallInFront:
                 print("-----trb-----")
 		self.forward(0.5)
-                self.turnRight(1.6)
-                self.forward(4)          
+                self.turnRight(1.1)
+                self.forward(1)
+		self.turnRight(0.9)
+		          
                                     
             print("End of cycle")
 
