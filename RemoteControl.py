@@ -1,31 +1,37 @@
-from InstructionsPWM import *
+from PiBot import PiBot
+
+robot = PiBot("Dave")
 
 try:
-	getReady();
-
-	options = {
-                "w": forward,
-                "s": backward,
-                "d": turnRight,
-                "a": turnLeft,
-                "e": clean
-        };
+	robot.setGPIOMode()
+	robot.getMotorsReady()
 
 	input = raw_input();
 	last = input;
 	while input != "e":
-                if input == "":
-			options[last[0]](0.5, 100);
+		if input == "":
+			input  = last;
+			continue
 		else:
-			options[input[0]](0.5, 100);
 			last = input;
+			if input == "w":
+				robot.forward(0.5)
+			elif input == "s":
+				robot.backward(0.5)
+			elif input == "d":
+				robot.turnRight(0.2)
+			elif input == "a":
+				robot.turnLeft(0.2)			
+
                 input = raw_input();
+
+	robot.clean()
                 
 	
 except Exception as ex:
-	clean();
-	print "\nException: ",ex,"\n";
+	robot.clean()
+	print("\nException: ",ex,"\n")
 finally:
-	clean();
-	print "End";
+	robot.clean()
+	print("End")
 
