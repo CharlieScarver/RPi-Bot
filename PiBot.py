@@ -109,14 +109,14 @@ class PiBot:
                 #    self.forward(3)
                 #    self.turnRight(0.1)
 
-                if lastDistsRight[0] > lastDistsRight[1] and lastDistsRight[1] > lastDistsRight[2] and lastDistsRight[2] > 16.0:
-                    self.turnRight(0.2)
-                    self.forward(0.7)
-                    self.turnLeft(0.2)
-                elif lastDistsRight[0] < lastDistsRight[1] and lastDistsRight[1] < lastDistsRight[2] and lastDistsRight[2] < 14.0:
-                    self.turnLeft(0.2)
-                    self.forward(0.7)
-                    self.turnRight(0.2)
+                #if lastDistsRight[0] > lastDistsRight[1] and lastDistsRight[1] > lastDistsRight[2] and lastDistsRight[2] > 16.0:
+                #    self.turnRight(0.2)
+                #    self.forward(0.7)
+                #    self.turnLeft(0.2)
+                #elif lastDistsRight[0] < lastDistsRight[1] and lastDistsRight[1] < lastDistsRight[2] and lastDistsRight[2] < 14.0:
+                #    self.turnLeft(0.2)
+                #    self.forward(0.7)
+                #    self.turnRight(0.2)
 
 
             if wallOnRight:# and wallInFront:
@@ -129,10 +129,9 @@ class PiBot:
             
             elif not wallOnRight:# and wallInFront:
                 print("-----trb-----")
-                self.forward(0.5)
-                self.turnRight(1.1)
-                self.forward(1.8)
-                self.turnRight(1.5)
+		sleep(5)
+                self.forward(0.1)
+                self.turnRight(1.2)
 
                 while not wallOnRight:
                     self.forward(self.MOVE_DUR_PER_TICK, self.MAX_SPEED)
@@ -204,7 +203,7 @@ class PiBot:
             p1 = GPIO.PWM(self.M1E, 100)
             p2 = GPIO.PWM(self.M2E, 100)
             
-            p1.start(dutyCycle)
+            p1.start(dutyCycle * 0.95)
             p2.start(dutyCycle)
 
             # p.ChangeDutyCycle(90)
@@ -292,8 +291,6 @@ class PiBot:
             GPIO.output(self.M2B, GPIO.LOW)
             GPIO.output(self.M2E, GPIO.LOW)
 
-
-            print "Staying here"
             sleep(duration)
 
             sleep(self.MOTOR_SETTLE_DUR)
@@ -303,7 +300,7 @@ class PiBot:
     def pulseFront(self):
 
         GPIO.output(self.S1T, False)
-        #print "Sensor settling"
+        #print("Sensor settling")
         sleep(self.SENSOR_SETTLE_DUR)
 
         GPIO.output(self.S1T, True)
@@ -321,14 +318,14 @@ class PiBot:
         distance = pulse_duration * (self.SPEED_OF_SOUND / 2) #17150
         distance = round(distance, 2)
 
-        print "Front Distance", distance, "cm"
+        print("Front Distance", distance, "cm")
 
         return distance
 
     def pulseRight(self):
 
         GPIO.output(self.S2T, False)
-        #print "Sensor settling"
+        #print("Sensor settling")
         sleep(self.SENSOR_SETTLE_DUR)
 
         GPIO.output(self.S2T, True)
@@ -346,7 +343,7 @@ class PiBot:
         distance = pulse_duration * (self.SPEED_OF_SOUND / 2) #17150
         distance = round(distance, 2)
 
-        print "Right Distance", distance, "cm"
+        print("Right Distance", distance, "cm")
 
         return distance
         
