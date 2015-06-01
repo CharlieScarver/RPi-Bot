@@ -24,8 +24,11 @@ class PiBot:
     # Speed of Sound at sea level at 20 degrees celsius (in cm/s)
     SPEED_OF_SOUND = 34321
 
-    # Max Motor Speed/PWM DutyCycle
+    # Max Motor Speed (PWM DutyCycle)
     MAX_SPEED = 100
+
+    # Motor Speed Correction (PWM DutyCycle)
+    M1_CORRECTION = 0.95
 
     # Settle and Move Durations (in seconds)
     MOTOR_SETTLE_DUR = 0.03
@@ -37,7 +40,7 @@ class PiBot:
 
     # Wall Detection Distances
 
-    FRONT_WALL_DET_DIST = 15.0
+    FRONT_WALL_DET_DIST = 10.0
 
     RIGHT_WALL_DET_DIST = 20.0
 
@@ -70,7 +73,11 @@ class PiBot:
 
     def go(self):
 
-        lastDistsRight = [15.0, 15.0, 15.0];
+        stepCounter = 0
+	lastDistsRight = [10.0, 10.0, 10.0, 10.0];
+	posLock = 0
+	posLockCounter = 0
+	
 
         while True:
 
@@ -80,58 +87,74 @@ class PiBot:
             wallInFront = frontCheckResult[0]
             wallOnRight = rightCheckResult[0]
 
+	    lastDistsRight[3] = lastDistsRight[2]
             lastDistsRight[2] = lastDistsRight[1]
             lastDistsRight[1] = lastDistsRight[0]
             lastDistsRight[0] = rightCheckResult[1]
+
+	    stepCounter += 1
                                                          
             while wallOnRight and not wallInFront:
                 print("-----f-----")
                 self.forward(self.MOVE_DUR_PER_TICK, self.MAX_SPEED)
                 
                 frontCheckResult = self.frontWallCheck()
-                rightCheckResult = self.rightWallCheck()
+                rightCheckResult = self.rightWallCheck()	
                 
                 wallInFront = frontCheckResult[0]
                 wallOnRight = rightCheckResult[0]
 
+		lastDistsRight[3] = lastDistsRight[2]
                 lastDistsRight[2] = lastDistsRight[1]
                 lastDistsRight[1] = lastDistsRight[0]
                 lastDistsRight[0] = rightCheckResult[1]
 
-		#if lastDistsRight[0] < 7.0:
-                #    self.backward(1)
-                #    self.turnLeft(0.2)
-                #    self.forward(3)
-                #    self.turnRight(0.1)
-                #elif lastDistsRight[0] > 17.0:
-                #    self.backward(1)
-                #    self.turnLeft(0.2)
-                #    self.forward(3)
-                #    self.turnRight(0.1)
+		stepCounter += 1
 
-                #if lastDistsRight[0] > lastDistsRight[1] and lastDistsRight[1] > lastDistsRight[2] and lastDistsRight[2] > 16.0:
-                #    self.turnRight(0.2)
-                #    self.forward(0.7)
-                #    self.turnLeft(0.2)
-                #elif lastDistsRight[0] < lastDistsRight[1] and lastDistsRight[1] < lastDistsRight[2] and lastDistsRight[2] < 14.0:
-                #    self.turnLeft(0.2)
-                #    self.forward(0.7)
-                #    self.turnRight(0.2)
+		if stepCounter > 3:
+
+		    if posLockCounter == 3:
+		        posLockCounter = 0
+		        posLock = 0
+
+		    if posLock == 1:
+		        posLockCounter += 1
+		    else:
+		 	if lastDistsRight[0] > lastDistsRight[1] and lastDistsRight[1] > lastDistsRight[2] and lastDistsRight[2] > lastDistsRight[3]:
+                            #self.turnRight(0.05)
+		            posLock = 1
+                    	elif lastDistsRight[0] < lastDistsRight[1] and lastDistsRight[1] < lastDistsRight[2] and lastDistsRight[2] < lastDistsRight[3]:
+                            #self.turnLeft(0.05)
+		            posLock = 1
+                    
 
 
-            if wallOnRight:# and wallInFront:
+            if frontCheckResult[1] < 5.0 and rightCheckResult[1] < 5.0:
+		break
+
+            if wallOnRight:
                 print("-----tlb-----")
-                self.backward(1)
-                self.turnLeft(0.5)
-                self.forward(1.5)
-                self.turnLeft(1)
-                self.forward(1)
+		self.turnRight(0.2)
+                self.backward(1.2)
+
+
+		for i in range(0,6):
+		    self.turnLeft(0.3)
+                    self.forward(self.MOVE_DUR_PER_TICK, self.MAX_SPEED)
+
+                    frontCheckResult = self.frontWallCheck()
+                    rightCheckResult = self.rightWallCheck()
+                    
+                    wallInFront = frontCheckResult[0]
+                    wallOnRight = rightCheckResult[0]
+
+		stepCounter = 0
+                
             
-            elif not wallOnRight:# and wallInFront:
+            elif not wallOnRight:
                 print("-----trb-----")
-		sleep(5)
-                self.forward(0.1)
-                self.turnRight(1.2)
+                self.backward(0.40)
+                self.turnRight(1.45)
 
                 while not wallOnRight:
                     self.forward(self.MOVE_DUR_PER_TICK, self.MAX_SPEED)
@@ -142,9 +165,7 @@ class PiBot:
                     wallInFront = frontCheckResult[0]
                     wallOnRight = rightCheckResult[0]
 
-                    lastDistsRight[2] = lastDistsRight[1]
-                    lastDistsRight[1] = lastDistsRight[0]
-                    lastDistsRight[0] = rightCheckResult[1]
+	  	stepCounter = 0
 		          
                                     
             print("End of cycle")
@@ -203,7 +224,7 @@ class PiBot:
             p1 = GPIO.PWM(self.M1E, 100)
             p2 = GPIO.PWM(self.M2E, 100)
             
-            p1.start(dutyCycle * 0.95)
+            p1.start(dutyCycle * self.M1_CORRECTION)
             p2.start(dutyCycle)
 
             # p.ChangeDutyCycle(90)
@@ -229,7 +250,7 @@ class PiBot:
             p2 = GPIO.PWM(self.M2E, 100)
             
             p1.start(dutyCycle)
-            p2.start(dutyCycle)
+            p2.start(dutyCycle * self.M1_CORRECTION)
 
             sleep(duration)
 
